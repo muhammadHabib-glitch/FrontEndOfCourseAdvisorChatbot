@@ -30,9 +30,9 @@ const KnowledgeBaseQueryScreen = ({navigation}) => {
 
       let data = await response.json();
       //   console.log('Knowledge Base Data:', data);
-      const ShowType1Data = data.data.filter(item => item.Type === 2);
-      console.log(ShowType1Data);
-      setData(ShowType1Data);
+      const ShowType2Data = data.data.filter(item => item.Type === 2);
+      console.log(ShowType2Data);
+      setData(ShowType2Data);
     } catch (error) {
       Alert.alert('Error Occurred', error.message || error.toString());
     }

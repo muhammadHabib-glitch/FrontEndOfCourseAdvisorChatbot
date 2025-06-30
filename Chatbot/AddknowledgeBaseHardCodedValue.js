@@ -32,12 +32,13 @@ const AddKnowledgeBase = ({navigation}) => {
         }),
       });
 
+      const responseData = await response.json();
       if (!response.ok) {
-        throw new Error('Failed to save data');
+        throw new Error(responseData.error || 'Failed to save data');
       }
 
       Alert.alert('Success', 'Knowledge Base added successfully');
-      navigation.navigate('TabNavigation');
+      navigation.navigate('KnowledgeBaseScreen');
     } catch (error) {
       Alert.alert('Error', error.message || 'Something went wrong');
     }

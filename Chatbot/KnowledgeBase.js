@@ -9,13 +9,67 @@ import {
 } from 'react-native';
 import KnowledgeBaseQueryScreen from './KnowledgeBaseQueryScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import ErrorLog from './ErrorLog';
 
 const KnowledgeBaseScreen = ({navigation}) => {
   const [Data, setData] = useState([]);
+  
 
   useEffect(() => {
     GetAllKnowledgeBase();
   }, []);
+
+  const DisableFunction = async () => {
+    try {
+      console.log('Disable hona laga rule');
+      const response = await fetch(
+        `${global.MyIpAddress}/DisableStatusKnowledgeBase`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            key_name
+          }),
+        },
+      );
+
+      if (response.ok) {
+        Alert.alert('Disable Successfully');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
+
+  // const ActiveInactive_Rule = async () => {
+  //   if (DisableRule == true) {
+  //     try {
+  //       const response = await fetch(
+  //         `${global.MyIpAddress}/DisableStatusKnowledgeBase`,
+  //         {
+  //           method: 'PUT',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({
+  //             key_name=
+  //           }),
+  //         },
+  //       );
+
+  //       if (!response.ok) {
+  //         throw new Error('Failed to update data');
+  //       }
+
+  //       Alert.alert('Success', 'Knowledge Base Disable  successfully');
+
+  //     } catch (error) {
+  //       Alert.alert('Error', error.message || 'Something went wrong');
+  //     }
+  //   }
+  // };
 
   const GetAllKnowledgeBase = async () => {
     try {
@@ -31,6 +85,7 @@ const KnowledgeBaseScreen = ({navigation}) => {
       }
 
       let data = await response.json();
+
       console.log('Knowledge Base Data:', data);
       const ShowType1Data = data.data.filter(item => item.Type === 1);
       console.log(ShowType1Data);
@@ -45,7 +100,7 @@ const KnowledgeBaseScreen = ({navigation}) => {
       <Text style={styles.cell}>{item.Key_name}</Text>
       <Text style={styles.cell}>{item.Value}</Text>
       <View style={styles.actions}>
-        <TouchableOpacity onPress={() => console.log('Disable', item.Key_name)}>
+        <TouchableOpacity onPress={() => DisableFunction()}>
           <Text style={styles.disableText}>Disable</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -175,11 +230,20 @@ const KnowledgeBaseTabNavigation = () => {
           tabBarIcon: () => null,
         }}
       />
+
       <Tab.Screen
         name="Query"
         component={KnowledgeBaseQueryScreen}
         options={{
           tabBarLabel: 'Query',
+          tabBarIcon: () => null,
+        }}
+      />
+      <Tab.Screen
+        name="ErrorLog"
+        component={ErrorLog}
+        options={{
+          tabBarLabel: 'ErrorLog',
           tabBarIcon: () => null,
         }}
       />

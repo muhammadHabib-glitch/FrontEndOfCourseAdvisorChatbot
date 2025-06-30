@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 
-const PreviousCourse = () => {
+const PreviousCourse = ({route, navigation}) => {
   const [PreviousCourses, setPreviousCourse] = useState([]);
-  const regNo = global.REG_NO;
+  const regNo = route.params?.regNo ?? global.REG_NO;
   console.log(regNo);
 
   useEffect(() => {

@@ -48,6 +48,7 @@ const UpdateKnowledgeBaseQuery = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Update Knowledge Base</Text>
       <Text style={styles.label}>Key Name</Text>
       <TextInput value={item.Key_name} editable={false} style={styles.input} />
 
@@ -67,8 +68,13 @@ const UpdateKnowledgeBaseQuery = ({route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, padding: 20, backgroundColor: '#fff'},
-  label: {fontSize: 16, marginBottom: 5, color: '#333'},
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  label: {margin: 5, fontWeight: 'bold', fontSize: 25, color: 'black'},
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -77,6 +83,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#f9f9f9',
     color: '#000',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    marginBottom: 30,
+    color: '#1E897A',
   },
   button: {
     backgroundColor: '#1E897A',

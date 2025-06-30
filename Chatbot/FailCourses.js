@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 
-const FailCourses = () => {
+const FailCourses = ({route, navigation}) => {
   const [failCourses, setFailCourse] = useState([]);
-  const regNo = global.REG_NO;
+  const regNo = route.params?.regNo ?? global.REG_NO;
   console.log(regNo);
 
   useEffect(() => {

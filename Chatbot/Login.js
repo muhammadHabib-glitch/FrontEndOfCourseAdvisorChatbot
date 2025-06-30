@@ -9,20 +9,53 @@ const LoginScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const EnrollementKnowledgeBase = async () => {
+  const CheckLogin = async () => {
     if (reg_no === 'Admin' && password === '123') {
       navigation.navigate('KnowledgeBaseTabNavigation');
       return;
     }
+
     try {
-      let response = await fetch(`${global.MyIpAddress}/StudentLogin`, {
+      // First try advisor login
+      let advisorResponse = await fetch(`${global.MyIpAddress}/AdvisorLogin`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({Emp_no: reg_no, password}), // 👈 Adjust for advisor
+      });
+
+      if (advisorResponse.ok) {
+        let advisorData = await advisorResponse.json();
+        console.log(advisorData.employee.Emp_firstname);
+        const advisorName =
+          advisorData.employee.Emp_firstname +
+          ' ' +
+          advisorData.employee.Emp_lastname;
+
+        global.Emp_no = reg_no;
+        global.password = password;
+
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'Welcome',
+                params: {advisorName},
+              },
+            ],
+          }),
+        );
+        return;
+      }
+
+      let studentResponse = await fetch(`${global.MyIpAddress}/StudentLogin`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({reg_no, password}),
       });
 
-      if (!response.ok) {
-        if (response.status === 401) {
+      if (!studentResponse.ok) {
+        if (studentResponse.status === 401) {
           Alert.alert(
             'Invalid login',
             'Incorrect registration number or password.',
@@ -32,26 +65,21 @@ const LoginScreen = ({navigation}) => {
         }
         return;
       }
-      let jsonResponse = await response.json();
-      const username =
-        jsonResponse.data.St_firstname + jsonResponse.data.St_lastname;
 
-      //Navigation.dispatch : manually trigger a navigation action. You're telling React Navigation ,  Replaces the entire navigation history with just the Home screen, and sends username as data — so user can’t go back to login by pressing back.
+      let jsonResponse = await studentResponse.json();
+      const username =
+        jsonResponse.data.St_firstname + ' ' + jsonResponse.data.St_lastname;
+      const currentSemester = jsonResponse.data.currentsemesterno;
+      global.currentSemester;
+      console.log(currentSemester)
+      global.REG_NO = reg_no;
+
       navigation.dispatch(
         CommonActions.reset({
-          // index: 0
-          // This sets the current screen index.
           index: 0,
           routes: [{name: 'Home', params: {username}}],
-          // The new screen stack should have just one screen — Home — and pass this data as params."
         }),
       );
-      if (jsonResponse.data && reg_no === jsonResponse.data.Reg_No) {
-        global.REG_NO = reg_no;
-        navigation.navigate('Home', {username});
-      } else {
-        Alert.alert('Incorrect username and password');
-      }
     } catch (error) {
       Alert.alert('Error Occurs', error.message || error.toString());
     }
@@ -68,7 +96,12 @@ const LoginScreen = ({navigation}) => {
           label="0000-ARID-0000"
           value={reg_no}
           onChangeText={setReg_no}
-          style={styles.input}
+          style={{
+            flex: 1,
+            width: '100%',
+            backgroundColor: 'transparent',
+            marginRight: 45,
+          }}
           underlineColor="purple"
           placeholderTextColor={'black'}
         />
@@ -91,16 +124,12 @@ const LoginScreen = ({navigation}) => {
           onPress={() => setPasswordVisible(!passwordVisible)}
         />
       </View>
+
       <TouchableOpacity style={{alignSelf: 'flex-start', marginBottom: 20}}>
         <Text style={{color: '#17B8A6'}}>Forgot Password?</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={EnrollementKnowledgeBase}>
+      <TouchableOpacity style={styles.loginButton} onPress={CheckLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-        <Text style={styles.signUpText}>Already have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
   );

@@ -4,7 +4,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {StyleSheet} from 'react-native';
 
 const App = () => {
-  global.MyIpAddress = 'http://10.19.132.130:5000';
+  global.MyIpAddress = 'http://192.168.18.96:5000';
 
   return (
     <GestureHandlerRootView style={styles.container}>
