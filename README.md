@@ -8,7 +8,7 @@
 
 ## 🚀 Features
 
-- **Chat interface** powered by BERT & XGBoost backend  
+- **Chat interface** powered by BERT  
 - **Course search** with prerequisites validation  
 - **Failed courses** retrieval and simple course recommendations  
 - **Voice input** support  
